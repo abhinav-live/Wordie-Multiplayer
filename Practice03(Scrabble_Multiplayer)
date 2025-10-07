@@ -1,0 +1,186 @@
+import enchant
+import random
+
+#to calculate total points of a given word-----
+def totalpoints(word,number_of_letter):
+
+    #TO check if the word is real or not
+    if d.check(word) == False:
+        return 0
+
+    #if number of letters in the word is not equal to the question
+    if len(word) != number_of_letter:
+        return 0
+    
+
+    
+    #checking if the word was used or not
+    if word in used_words:
+        return 0
+    else: used_words.append(word)  
+
+
+    #Total point calculation of a valid word
+    total_point = 0
+    for letter in word:
+            
+        if letter in one_pointer:
+            total_point +=1
+        if letter in two_pointer:
+            total_point +=2
+        if letter in three_pointer:
+            total_point +=3
+        if letter in four_pointer:
+            total_point +=4
+        if letter in five_pointer:
+            total_point +=5
+        if letter in six_pointer:
+            total_point +=6 
+    return total_point
+
+#Players
+class Player:
+    def __init__(self, name, number, wins):
+        self.name = name
+        self.player_number = number
+        self.wins = wins
+
+#Get_players_info
+def get_players():
+    for player in range(1,total_num_players+1):
+        player_name = str(input(f"Player {player}: Name : "))
+        total_players.append(Player(player_name,player,0))
+
+#GamePlay
+def Play():
+    winning_player = None
+    highest_point = 0
+
+
+    #if difficulty = 1
+    if difficulty == 1:
+
+        number_of_letter = random.randint(4,10)
+
+        for i in range(0, len(total_players)):
+            player_word = input(f"{total_players[i].name}  :Write a word with {number_of_letter} letters : ").casefold()
+            player_point = totalpoints(player_word,number_of_letter)
+
+            if player_point > highest_point:
+              highest_point = player_point    
+              winning_player = total_players[i]
+        
+    
+    #if difficulty = 2
+    if difficulty == 2:
+        number_of_letter = random.randint(4,8)
+        included_letter = random.choice(alphabets)
+
+        for i in range(0, len(total_players)):
+            player_word = input(f"{total_players[i].name}  :Write a word with {number_of_letter} letters which includes {included_letter} : ").casefold()
+
+            #to check letter inclusion in the word
+            in_word = included_letter in player_word
+            if in_word == False:
+                player_point = 0
+            else:
+                player_point = totalpoints(player_word,number_of_letter)
+
+
+            if player_point > highest_point:
+              highest_point = player_point    
+              winning_player = total_players[i]
+    
+
+    #if difficulty = 3
+    if difficulty == 3:
+
+        number_of_letter = random.randint(4,10)
+        first_word = random.choice(alphabets)
+
+        for i in range(0, len(total_players)):
+            player_word = input(f"{total_players[i].name}  :Write a word with {number_of_letter} letters, that starts With [{first_word.capitalize()}] : ").casefold()
+            if player_word[0] != first_word:
+                player_point = 0
+            else:
+                player_point = totalpoints(player_word,number_of_letter)
+
+            if player_point > highest_point:
+              highest_point = player_point    
+              winning_player = total_players[i]
+
+    if winning_player == None:
+        print("Nobody won :( ")
+    else:
+        winning_player.wins += 1
+        print(f"{winning_player.name} : Won : {winning_player.wins}")
+
+
+#GamePlayLoop
+def play_game():
+    for i in range(0,Total_Games):
+        Play()
+
+
+#Result_Calc------
+def results():
+    Person_Won =list()
+    highest_wins = 0
+
+    for i in range(0, len(total_players)):
+
+        if total_players[i].wins > highest_wins:
+            highest_wins = total_players[i].wins 
+
+    for i in range(0, len(total_players)):    
+        if total_players[i].wins == highest_wins:
+            highest_wins = total_players[i].wins 
+            Person_Won.append(total_players[i].name)
+
+
+    print(
+    f"""
+
+
+    -----------GAME OVER-----------
+    Out of {Total_Games} Games :
+
+    """
+    )
+    for i in range(0, len(total_players)):
+        print(f"{total_players[i].name} : Won : {total_players[i].wins} Rounds\n")
+
+
+    print(f" AKA ======> {Person_Won} WON!!!!!!!\n\n")
+   
+
+# Create an English dictionary-----
+d = enchant.Dict("en_US")
+used_words = list()
+
+#points worth-----
+one_pointer = ["a","e","i","t","o"]     #1
+two_pointer = ["r","n","s","h","d"]     #2
+three_pointer = ["l","c","u","m","w"]   #3
+four_pointer = ["f","g","y","p","b"]    #4
+five_pointer = ["v","k","j","q"]        #5
+six_pointer = ["z","x"]                 #6
+
+#alphabet
+alphabets = ["a","e","i","t","o","r","n","s","h","d","l","c","u","m","w","f","g","y","p","b","v","k","j","q","z","x"]
+vowels = ["a","e","i","o","u"]
+consonants = ["t","r","n","s","h","d","l","c","m","w","f","g","y","p","b","v","k","j","q","z","x"]
+
+#Variables------
+total_players = list()
+
+#inputs ------- 
+total_num_players = int(input("Total number of Players : "))
+get_players()
+Total_Games = int(input("Total Number of Rounds : "))
+difficulty = int(input("Enter Difficulty [1,2,3] : "))
+
+#Game------
+play_game()
+results()
+
