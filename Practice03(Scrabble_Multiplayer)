@@ -100,7 +100,7 @@ def Play():
 
         for i in range(0, len(total_players)):
             player_word = input(f"{total_players[i].name}  :Write a word with {number_of_letter} letters, that starts With [{first_word.capitalize()}] : ").casefold()
-            if player_word[0] != first_word:
+            if not player_word or player_word[0] != first_word:
                 player_point = 0
             else:
                 player_point = totalpoints(player_word,number_of_letter)
@@ -134,7 +134,6 @@ def results():
 
     for i in range(0, len(total_players)):    
         if total_players[i].wins == highest_wins:
-            highest_wins = total_players[i].wins 
             Person_Won.append(total_players[i].name)
 
 
